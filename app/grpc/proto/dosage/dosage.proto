@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./app/grpc/proto/dosage/dosage.proto
+package grpc;
+option go_package= "main/app/grpc/proto/dosage";
+
+service DosageService {
+  rpc GetDosageById (DosageRequest) returns (DosageResponse) {}
+}
+
+message DosageRequest {
+  int64  dosageNo = 1;
+}
+
+message DosageResponse {
+    int64 dosageNo = 1;
+    Drug drugInfo = 2;
+    int64 cycle = 3;
+}
+
+message Drug {
+    string name = 1;
+    string description = 2;
+    string usage = 3;
+    string sideEffect = 4;
+    string warning = 5;
+    string storage = 6;
+    string image = 7;
+}

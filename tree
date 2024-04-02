@@ -1,0 +1,63 @@
+📦homis-boilerplate
+ ┣ 📂app
+ ┃ ┣ 📂api
+ ┃ ┃ ┣ 📂patient
+ ┃ ┃ ┃ ┣ 📂handler
+ ┃ ┃ ┃ ┃ ┗ 📜handler.go
+ ┃ ┃ ┃ ┣ 📂resource
+ ┃ ┃ ┃ ┃ ┣ 📜patient.go
+ ┃ ┃ ┃ ┃ ┣ 📜request.go
+ ┃ ┃ ┃ ┃ ┗ 📜response.go
+ ┃ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┃ ┗ 📜service.go
+ ┃ ┃ ┃ ┗ 📜patient.go
+ ┃ ┃ ┗ 📜router.go
+ ┃ ┣ 📂grpc
+ ┃ ┃ ┣ 📂proto
+ ┃ ┃ ┃ ┣ 📂dosage
+ ┃ ┃ ┃ ┃ ┣ 📜dosage.pb.go
+ ┃ ┃ ┃ ┃ ┣ 📜dosage.proto
+ ┃ ┃ ┃ ┃ ┗ 📜dosage_grpc.pb.go
+ ┃ ┃ ┃ ┗ 📂patient
+ ┃ ┃ ┃ ┃ ┣ 📜patient.pb.go
+ ┃ ┃ ┃ ┃ ┣ 📜patient.proto
+ ┃ ┃ ┃ ┃ ┗ 📜patient_grpc.pb.go
+ ┃ ┃ ┣ 📂service
+ ┃ ┃ ┃ ┣ 📂dosage
+ ┃ ┃ ┃ ┃ ┗ 📜dosage.go
+ ┃ ┃ ┃ ┗ 📂patient
+ ┃ ┃ ┃ ┃ ┗ 📜patient.go
+ ┃ ┃ ┗ 📜grpc.go
+ ┃ ┗ 📜app.go
+ ┣ 📂common
+ ┃ ┣ 📂fiberkit
+ ┃ ┃ ┗ 📜fiberkit.go
+ ┃ ┗ 📂util
+ ┃ ┃ ┗ 📜util.go
+ ┣ 📂config
+ ┃ ┣ 📜cofig.go
+ ┃ ┣ 📜config.yml
+ ┃ ┗ 📜constant.go
+ ┣ 📂constant
+ ┃ ┣ 📂common
+ ┃ ┃ ┗ 📜common.go
+ ┃ ┣ 📂path
+ ┃ ┃ ┣ 📂core
+ ┃ ┃ ┃ ┗ 📜core.go
+ ┃ ┃ ┗ 📂external
+ ┃ ┗ 📜constant.go
+ ┣ 📂database
+ ┃ ┣ 📂entity
+ ┃ ┃ ┗ 📜patient.go
+ ┃ ┣ 📂repository
+ ┃ ┃ ┣ 📂patient
+ ┃ ┃ ┃ ┗ 📜patient.go
+ ┃ ┃ ┗ 📜repository.go
+ ┃ ┗ 📜connection.go
+ ┣ 📂external
+ ┣ 📂middleware
+ ┣ 📜.gitignore
+ ┣ 📜go.mod
+ ┣ 📜go.sum
+ ┣ 📜main.go
+ ┗ 📜tree

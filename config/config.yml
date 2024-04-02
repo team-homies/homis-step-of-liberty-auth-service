@@ -1,0 +1,13 @@
+#샘플 config
+app:
+  name: 'boilerplate'
+  version: '0.0.1'
+  port: :8157
+  grpc_port: :8158
+#주석주석
+database:
+  host: 'localhost'
+  port: 5432
+  user: 'user'
+  password: 'pw'
+  database: 'test'
