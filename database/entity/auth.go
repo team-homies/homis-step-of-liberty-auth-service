@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
+	Email        string `gorm:"column:email;not null"`
 	Nickname     string `gorm:"default:'email';column:nickname;not null"`
 	Profile      string `gorm:"column:profile;not null"`
 	Provider     string `gorm:"column:provider;not null"`
