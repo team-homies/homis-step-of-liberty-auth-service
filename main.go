@@ -4,6 +4,7 @@ import (
 	"log"
 	"main/app"
 	"main/config"
+	"main/database"
 	"net"
 
 	"github.com/spf13/viper"
@@ -14,6 +15,12 @@ func init() {
 }
 
 func main() {
+	var err error
+
+	database.DB, err = database.InitDB()
+	if err != nil {
+		log.Fatalf("database 연결 실패: %v", err)
+	}
 	// fiber
 	fiber := app.InitFiber()
 
