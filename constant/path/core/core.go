@@ -4,6 +4,7 @@ package core
 type InternalApi struct {
 	Patient PatientPath
 	Doctor  DoctorPath
+	Auth    AutnPath
 }
 
 type PatientPath struct {
@@ -20,4 +21,7 @@ type DoctorPath struct {
 	CreatePatient string
 	UpdatePatient string
 	DeletePatient string
+}
+type AutnPath struct {
+	CreateToken string
 }
