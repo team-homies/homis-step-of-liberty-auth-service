@@ -52,15 +52,26 @@ func (as *authService) CreateToken(req *resource.CreateTokenRequest) (res *resou
 	// 2. AccessToken, RefreshToken 만들기
 	exp := time.Now().Add(time.Minute * 15).Unix()
 	accessToken, err := CreateAccessToken(userId, exp)
+	if err != nil {
+		return
+	}
 
 	refreshToken, err := CreateRefreshToken(userId)
+	if err != nil {
+		return
+	}
 
+	// 3. RefreshToken db에 저장
+	err = repository.NewRepository().UpdateRefreshToken(userId, refreshToken)
+	if err != nil {
+		return
+	}
+	
 	res = &resource.CreateTokenResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		Expired:      exp,
 	}
-	// 3. RefreshToken db에 저장
 	return
 }
 

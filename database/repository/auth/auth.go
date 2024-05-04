@@ -9,7 +9,7 @@ import (
 type AuthRepository interface {
 	FindUserByUserInfo(email, provider string) (user *entity.User, err error)
 	CreateUser(email, provider string) error
-	SetRefreshToken() error
+	UpdateRefreshToken(userId uint64, refreshToken string) error
 }
 
 type gormAuthRepository struct {
@@ -32,6 +32,7 @@ func (g *gormAuthRepository) FindUserByUserInfo(email, provider string) (user *e
 }
 
 func (g *gormAuthRepository) CreateUser(email, provider string) error {
+	// TODO: 트랜잭션 고려
 	// 	INSERT
 	//   INTO "user"(nickname, profile, provider, refresh_token, is_used, email)
 	// VALUES('', '', 'google', '', true, 'suhy427@gmail.com');
@@ -47,6 +48,12 @@ func (g *gormAuthRepository) CreateUser(email, provider string) error {
 	return tx.Error
 }
 
-func (g *gormAuthRepository) SetRefreshToken() error {
+func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken string) error {
+	// TODO: 트랜잭션 고려
+	// update "user"
+	// set refresh_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMj'
+	// where id = 2;
+	tx := g.db.Model(&entity.User{}).Where("id = ?", userId).Update("refresh_token", refreshToken)
 
+	return tx.Error
 }
