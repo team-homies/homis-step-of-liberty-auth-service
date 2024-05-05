@@ -20,7 +20,7 @@ func GetPath() *core.InternalApi {
 				UpdatePatient: "/patient",
 				DeletePatient: "/patient",
 			},
-			Auth: core.AutnPath{
+			Auth: core.AuthPath{
 				CreateToken: "/auth/login",
 			},
 		}
