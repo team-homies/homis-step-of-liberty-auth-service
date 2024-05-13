@@ -10,6 +10,7 @@ type AuthRepository interface {
 	FindUserByUserInfo(email, provider string) (user *entity.User, err error)
 	CreateUser(email, provider string) error
 	UpdateRefreshToken(userId uint64, refreshToken string) error
+	FindRefreshToken(refreshToken string) (result *entity.User, err error)
 }
 
 type gormAuthRepository struct {
@@ -56,4 +57,14 @@ func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken stri
 	tx := g.db.Model(&entity.User{}).Where("id = ?", userId).Update("refresh_token", refreshToken)
 
 	return tx.Error
+}
+
+func (g *gormAuthRepository) FindRefreshToken(refreshToken string) (result *entity.User, err error) {
+	// SELECT refresh_token
+	//   FROM "user" u
+	//  WHERE refresh_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMj'
+
+	tx := g.db.Select("refresh_token").Where("refresh_token = ?", refreshToken).Find(&result)
+
+	return result, tx.Error
 }
