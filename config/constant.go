@@ -5,7 +5,7 @@ const (
 	APP_NAME             = "app.name"
 	APP_VERSION          = "app.version"
 	APP_GRPC_PORT        = "app.grpc_port"
-	JWT_SCRET            = "jwt.scret"
+	JWT_SECRET           = "jwt.scret"
 	DATABASE_HOST        = "database.host"
 	DATABASE_PORT        = "database.port"
 	DATABASE_DATABASE    = "database.database"

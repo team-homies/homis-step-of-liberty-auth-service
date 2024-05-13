@@ -84,7 +84,7 @@ func CreateAccessToken(userid uint64, exp int64) (string, error) {
 	atClaims["exp"] = exp
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 
-	token, err := at.SignedString([]byte(viper.GetString(config.JWT_SCRET)))
+	token, err := at.SignedString([]byte(viper.GetString(config.JWT_SECRET)))
 	if err != nil {
 		return "", err
 	}
@@ -99,7 +99,7 @@ func CreateRefreshToken(userid uint64) (string, error) {
 	atClaims["user_id"] = userid
 	atClaims["exp"] = time.Now().Add(time.Hour * 24 * 30).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	token, err := at.SignedString([]byte(viper.GetString(config.JWT_SCRET)))
+	token, err := at.SignedString([]byte(viper.GetString(config.JWT_SECRET)))
 	if err != nil {
 		return "", err
 	}
