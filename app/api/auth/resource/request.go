@@ -5,3 +5,8 @@ type CreateTokenRequest struct {
 	Provider      string `json:"provider"`
 	FirebaseToken string `json:"firebase_token"`
 }
+
+type UpdateTokenRequest struct {
+	Id           string `json:"id"`
+	RefreshToken string `json:"refresh_token"`
+}
