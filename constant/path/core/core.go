@@ -24,5 +24,6 @@ type DoctorPath struct {
 }
 
 type AuthPath struct {
-	CreateToken string
+	CreateToken        string
+	UpdateRefreshToken string
 }

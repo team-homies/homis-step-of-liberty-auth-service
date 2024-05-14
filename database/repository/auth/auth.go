@@ -60,11 +60,11 @@ func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken stri
 }
 
 func (g *gormAuthRepository) FindRefreshToken(refreshToken string) (result *entity.User, err error) {
-	// SELECT refresh_token
+	// SELECT id, refresh_token
 	//   FROM "user" u
 	//  WHERE refresh_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMj'
 
-	tx := g.db.Select("refresh_token").Where("refresh_token = ?", refreshToken).Find(&result)
+	tx := g.db.Select("id", "refresh_token").Where("refresh_token = ?", refreshToken).Find(&result)
 
 	return result, tx.Error
 }

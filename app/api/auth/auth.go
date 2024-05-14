@@ -12,6 +12,9 @@ func SetApis(route fiber.Router) {
 	// 토큰 발급
 	route.Post(constant.GetPath().Auth.CreateToken, h.CreateToken)
 
+	// 토큰 재발급
+	route.Post(constant.GetPath().Auth.UpdateRefreshToken, h.UpdateRefreshToken)
+
 	// 시각적 성취도 조회
 	// route.Get(constant.GetPath().Auth.GetVisualAchievement, middleware.JWTMiddleware, h.GetVisualAchievement)
 

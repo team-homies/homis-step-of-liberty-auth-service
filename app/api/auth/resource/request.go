@@ -7,6 +7,5 @@ type CreateTokenRequest struct {
 }
 
 type UpdateTokenRequest struct {
-	Id           string `json:"id"`
 	RefreshToken string `json:"refresh_token"`
 }
