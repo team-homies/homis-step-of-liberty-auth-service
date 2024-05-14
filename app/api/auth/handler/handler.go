@@ -10,6 +10,7 @@ import (
 
 type handler interface {
 	CreateToken(c *fiber.Ctx) error
+	UpdateRefreshToken(c *fiber.Ctx) error
 }
 
 type authHandler struct {
@@ -31,6 +32,21 @@ func (h *authHandler) CreateToken(c *fiber.Ctx) error {
 	}
 
 	res, err := h.service.CreateToken(req)
+	if err != nil {
+		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
+	}
+	return ctx.HttpOK(res)
+}
+
+func (h *authHandler) UpdateRefreshToken(c *fiber.Ctx) error {
+	ctx := fiberkit.FiberKit{C: c}
+	req := new(resource.UpdateTokenRequest)
+	err := ctx.C.BodyParser(req)
+	if err != nil {
+		return ctx.HttpFail(err.Error(), fiber.StatusBadRequest)
+	}
+
+	res, err := h.service.UpdateRefreshToken(req)
 	if err != nil {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
 	}
