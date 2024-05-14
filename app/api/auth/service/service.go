@@ -12,6 +12,7 @@ import (
 
 type AuthService interface {
 	CreateToken(req *resource.CreateTokenRequest) (res *resource.CreateTokenResponse, err error)
+	UpdateRefreshToken(req *resource.UpdateTokenRequest) (res *resource.UpdateTokenResponse, err error)
 }
 
 func NewAuthService() AuthService {
@@ -104,4 +105,34 @@ func CreateRefreshToken(userid uint64) (string, error) {
 		return "", err
 	}
 	return token, nil
+}
+
+func (as *authService) UpdateRefreshToken(req *resource.UpdateTokenRequest) (res *resource.UpdateTokenResponse, err error) {
+	var userId uint64
+	// 1.FindRefreshToken 으로 db에 refresh토큰 조회
+	token, err := repository.NewRepository().FindRefreshToken(req.RefreshToken)
+	if err != nil {
+		return
+	}
+	// 1-1. refresh 값이 없으면 에러
+	// if token == nil {
+	//}
+
+	// 1-2. refresh 값이 있으면 access token 발급
+	if token != nil {
+		userId = uint64(token.ID)
+	}
+
+	exp := time.Now().Add(time.Minute * 15).Unix()
+	accessToken, err := CreateAccessToken(userId, exp)
+	if err != nil {
+		return
+	}
+
+	res = &resource.UpdateTokenResponse{
+		AccessToken: accessToken,
+		Expired:     exp,
+	}
+
+	return res, err
 }
