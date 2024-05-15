@@ -8,7 +8,7 @@ import (
 )
 
 func InitRoutes(app *fiber.App) {
-	apiGroup := app.Group("/api")
+	apiGroup := app.Group("/auth")
 	patient.SetApis(apiGroup)
 	auth.SetApis(apiGroup)
 }
