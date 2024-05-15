@@ -11,7 +11,7 @@ type UpdateTokenResponse struct {
 	Expired     int64  `json:"expired"`
 }
 
-type UserInfo struct {
+type UserInfoResponse struct {
 	ID       uint   `json:"id"`
 	Email    string `json:"email"`
 	Nickname string `json:"nickname"`

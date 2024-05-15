@@ -9,3 +9,7 @@ type CreateTokenRequest struct {
 type UpdateTokenRequest struct {
 	RefreshToken string `json:"refresh_token"`
 }
+
+// type UserInfoRequest struct {
+// 	UserId uint64 `json:"id"`
+// }

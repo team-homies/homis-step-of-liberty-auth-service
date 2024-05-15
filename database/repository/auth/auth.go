@@ -11,7 +11,7 @@ type AuthRepository interface {
 	CreateUser(email, provider string) error
 	UpdateRefreshToken(userId uint64, refreshToken string) error
 	FindRefreshToken(refreshToken string) (result *entity.User, err error)
-	FindUserInfo(userId uint64) (user *entity.User, err error)
+	FindUserInfo(userId uint) (user *entity.User, err error)
 }
 
 type gormAuthRepository struct {
@@ -70,7 +70,7 @@ func (g *gormAuthRepository) FindRefreshToken(refreshToken string) (result *enti
 	return result, tx.Error
 }
 
-func (g *gormAuthRepository) FindUserInfo(userId uint64) (user *entity.User, err error) {
+func (g *gormAuthRepository) FindUserInfo(userId uint) (user *entity.User, err error) {
 	// 	select *
 	//    from "user"
 	//   where id = 4
