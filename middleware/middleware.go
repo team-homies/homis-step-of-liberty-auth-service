@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"main/config"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -27,8 +28,11 @@ func JWTMiddleware(c *fiber.Ctx) error {
 			"error": "Invalid token",
 		})
 	}
-
-	c.Locals("userId", userId)
+	userIdNumber, err := strconv.Atoi(userId)
+	if err != nil {
+		return err
+	}
+	c.Locals("userId", userIdNumber)
 
 	return c.Next()
 }
@@ -51,7 +55,7 @@ func JwtChecker(tokenString string) (isChecked bool, userId string, err error) {
 				return false, "", errors.New("invalid token")
 			}
 		}
-		userId = claims["user_id"].(string)
+		userId = strconv.FormatFloat(claims["user_id"].(float64), 'f', -1, 64)
 	} else {
 		return false, "", errors.New("invalid token")
 	}
