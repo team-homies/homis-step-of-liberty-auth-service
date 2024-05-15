@@ -13,6 +13,7 @@ import (
 type AuthService interface {
 	CreateToken(req *resource.CreateTokenRequest) (res *resource.CreateTokenResponse, err error)
 	UpdateRefreshToken(req *resource.UpdateTokenRequest) (res *resource.UpdateTokenResponse, err error)
+	UserInfo(userId uint) (res *resource.UserInfoResponse, err error)
 }
 
 func NewAuthService() AuthService {
@@ -32,6 +33,7 @@ func (as *authService) CreateToken(req *resource.CreateTokenRequest) (res *resou
 	if err != nil {
 		return
 	}
+	
 	// 1-1. 없으면 CreateUser 사용해서 저장 후 로직 진행(2번)
 	if !user.IsUsed {
 		err = repository.NewRepository().CreateUser(req.Id, req.Provider)
@@ -76,12 +78,12 @@ func (as *authService) CreateToken(req *resource.CreateTokenRequest) (res *resou
 	return
 }
 
-func CreateAccessToken(userid uint64, exp int64) (string, error) {
+func CreateAccessToken(userId uint64, exp int64) (string, error) {
 	var err error
 	//Creating Access Token
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
-	atClaims["user_id"] = userid
+	atClaims["user_id"] = userId
 	atClaims["exp"] = exp
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 
@@ -92,12 +94,12 @@ func CreateAccessToken(userid uint64, exp int64) (string, error) {
 	return token, nil
 }
 
-func CreateRefreshToken(userid uint64) (string, error) {
+func CreateRefreshToken(userId uint64) (string, error) {
 	var err error
 	//Creating Refresh Token
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
-	atClaims["user_id"] = userid
+	atClaims["user_id"] = userId
 	atClaims["exp"] = time.Now().Add(time.Hour * 24 * 30).Unix()
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(viper.GetString(config.JWT_SECRET)))
@@ -116,11 +118,14 @@ func (as *authService) UpdateRefreshToken(req *resource.UpdateTokenRequest) (res
 	}
 	// 1-1. refresh 값이 없으면 에러
 	// if token == nil {
-	//}
+	//	return
+	// }
 
 	// 1-2. refresh 값이 있으면 access token 발급
 	if token != nil {
 		userId = uint64(token.ID)
+	} else {
+		return
 	}
 
 	exp := time.Now().Add(time.Minute * 15).Unix()
@@ -132,6 +137,38 @@ func (as *authService) UpdateRefreshToken(req *resource.UpdateTokenRequest) (res
 	res = &resource.UpdateTokenResponse{
 		AccessToken: accessToken,
 		Expired:     exp,
+	}
+
+	return res, err
+}
+
+func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, err error) {
+	user, err := repository.NewRepository().FindUserInfo(userId)
+	if err != nil {
+		return
+	}
+	res = new(resource.UserInfoResponse)
+
+	// if user != nil {
+	// 	res = &resource.UserInfoResponse{
+	// 		ID:       user.ID,
+	// 		Email:    user.Email,
+	// 		Nickname: user.Nickname,
+	// 		Profile:  user.Profile,
+	// 	}
+	// } else {
+	// 	return
+	// }
+
+	if user == nil {
+		return
+	}
+
+	res = &resource.UserInfoResponse{
+		ID:       user.ID,
+		Email:    user.Email,
+		Nickname: user.Nickname,
+		Profile:  user.Profile,
 	}
 
 	return res, err
