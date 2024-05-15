@@ -120,9 +120,10 @@ func (as *authService) UpdateRefreshToken(req *resource.UpdateTokenRequest) (res
 	//}
 
 	// 1-2. refresh 값이 있으면 access token 발급
-	if token != nil {
-		userId = uint64(token.ID)
+	if token == nil {
+		return
 	}
+	userId = uint64(token.ID)
 
 	exp := time.Now().Add(time.Minute * 15).Unix()
 	accessToken, err := CreateAccessToken(userId, exp)
