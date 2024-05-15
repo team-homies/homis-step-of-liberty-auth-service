@@ -21,8 +21,8 @@ func GetPath() *core.InternalApi {
 				DeletePatient: "/patient",
 			},
 			Auth: core.AuthPath{
-				CreateToken:        "/auth/login",
-				UpdateRefreshToken: "/auth/user",
+				CreateToken:        "/login",
+				UpdateRefreshToken: "/user",
 			},
 		}
 	})
