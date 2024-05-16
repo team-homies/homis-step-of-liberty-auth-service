@@ -12,7 +12,7 @@ type UpdateTokenResponse struct {
 }
 
 type UserInfoResponse struct {
-	ID       uint   `json:"id"`
+	Id       uint   `json:"id"`
 	Email    string `json:"email"`
 	Nickname string `json:"nickname"`
 	Profile  string `json:"profile"`

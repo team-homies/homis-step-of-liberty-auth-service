@@ -33,7 +33,7 @@ func (as *authService) CreateToken(req *resource.CreateTokenRequest) (res *resou
 	if err != nil {
 		return
 	}
-	
+
 	// 1-1. 없으면 CreateUser 사용해서 저장 후 로직 진행(2번)
 	if !user.IsUsed {
 		err = repository.NewRepository().CreateUser(req.Id, req.Provider)
@@ -165,7 +165,7 @@ func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, er
 	}
 
 	res = &resource.UserInfoResponse{
-		ID:       user.ID,
+		Id:       user.ID,
 		Email:    user.Email,
 		Nickname: user.Nickname,
 		Profile:  user.Profile,
