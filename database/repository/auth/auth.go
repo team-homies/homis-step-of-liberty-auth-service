@@ -11,6 +11,7 @@ type AuthRepository interface {
 	CreateUser(email, provider string) error
 	UpdateRefreshToken(userId uint64, refreshToken string) error
 	FindRefreshToken(refreshToken string) (result *entity.User, err error)
+	FindUserInfo(userId uint) (user *entity.User, err error)
 }
 
 type gormAuthRepository struct {
@@ -32,31 +33,43 @@ func (g *gormAuthRepository) FindUserByUserInfo(email, provider string) (user *e
 	return user, tx.Error
 }
 
-func (g *gormAuthRepository) CreateUser(email, provider string) error {
-	// TODO: 트랜잭션 고려
+func (g *gormAuthRepository) CreateUser(email, provider string) (err error) {
 	// 	INSERT
 	//   INTO "user"(nickname, profile, provider, refresh_token, is_used, email)
 	// VALUES('', '', 'google', '', true, 'suhy427@gmail.com');
-	tx := g.db.Save(&entity.User{
+	tx := g.db.Begin()
+	err = tx.Save(&entity.User{
 		Nickname:     "",
 		Profile:      "",
 		Provider:     provider,
 		RefreshToken: "",
 		IsUsed:       true,
 		Email:        email,
-	})
+	}).Error
 
-	return tx.Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
+
+	return
 }
 
-func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken string) error {
-	// TODO: 트랜잭션 고려
+func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken string) (err error) {
 	// update "user"
 	// set refresh_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMj'
 	// where id = 2;
-	tx := g.db.Model(&entity.User{}).Where("id = ?", userId).Update("refresh_token", refreshToken)
+	tx := g.db.Begin()
+	err = tx.Model(&entity.User{}).Where("id = ?", userId).Update("refresh_token", refreshToken).Error
 
-	return tx.Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
+
+	return
 }
 
 func (g *gormAuthRepository) FindRefreshToken(refreshToken string) (result *entity.User, err error) {
@@ -67,4 +80,15 @@ func (g *gormAuthRepository) FindRefreshToken(refreshToken string) (result *enti
 	tx := g.db.Select("id", "refresh_token").Where("refresh_token = ?", refreshToken).Find(&result)
 
 	return result, tx.Error
+}
+
+func (g *gormAuthRepository) FindUserInfo(userId uint) (user *entity.User, err error) {
+	// 	select *
+	//    from "user"
+	//   where id = 4
+	//     AND is_used = true;
+	tx := g.db.Where("id = ? AND is_used = true", userId).Find(&user)
+
+	return user, tx.Error
+
 }

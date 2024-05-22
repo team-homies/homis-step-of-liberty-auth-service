@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"main/config"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,7 +15,7 @@ import (
 func JWTMiddleware(c *fiber.Ctx) error {
 	tokenString := c.Get("X-Authorization")
 
-	result, err := JwtChecker(tokenString)
+	result, userId, err := JwtChecker(tokenString)
 
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -27,11 +28,16 @@ func JWTMiddleware(c *fiber.Ctx) error {
 			"error": "Invalid token",
 		})
 	}
+	userIdNumber, err := strconv.Atoi(userId)
+	if err != nil {
+		return err
+	}
+	c.Locals("userId", userIdNumber)
 
 	return c.Next()
 }
 
-func JwtChecker(tokenString string) (bool, error) {
+func JwtChecker(tokenString string) (isChecked bool, userId string, err error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.ErrSignatureInvalid
@@ -40,18 +46,19 @@ func JwtChecker(tokenString string) (bool, error) {
 	})
 
 	if err != nil {
-		return false, errors.New("invalid token")
+		return false, "", errors.New("invalid token")
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if exp, ok := claims["exp"].(float64); ok {
 			if int64(exp) < time.Now().Unix() {
-				return false, errors.New("invalid token")
+				return false, "", errors.New("invalid token")
 			}
 		}
+		userId = strconv.FormatFloat(claims["user_id"].(float64), 'f', -1, 64)
 	} else {
-		return false, errors.New("invalid token")
+		return false, "", errors.New("invalid token")
 	}
 
-	return true, nil
+	return true, userId, nil
 }
