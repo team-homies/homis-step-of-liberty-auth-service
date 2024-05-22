@@ -34,36 +34,42 @@ func (g *gormAuthRepository) FindUserByUserInfo(email, provider string) (user *e
 }
 
 func (g *gormAuthRepository) CreateUser(email, provider string) (err error) {
-	// TODO: 트랜잭션 고려
 	// 	INSERT
 	//   INTO "user"(nickname, profile, provider, refresh_token, is_used, email)
 	// VALUES('', '', 'google', '', true, 'suhy427@gmail.com');
 	tx := g.db.Begin()
-	tx.Save(&entity.User{
+	err = tx.Save(&entity.User{
 		Nickname:     "",
 		Profile:      "",
 		Provider:     provider,
 		RefreshToken: "",
 		IsUsed:       true,
 		Email:        email,
-	})
-	if tx.Error != nil {
+	}).Error
+
+	if err != nil {
 		tx.Rollback()
-		return err
+		return
 	}
 	tx.Commit()
 
 	return
 }
 
-func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken string) error {
-	// TODO: 트랜잭션 고려
+func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken string) (err error) {
 	// update "user"
 	// set refresh_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMj'
 	// where id = 2;
-	tx := g.db.Model(&entity.User{}).Where("id = ?", userId).Update("refresh_token", refreshToken)
+	tx := g.db.Begin()
+	err = tx.Model(&entity.User{}).Where("id = ?", userId).Update("refresh_token", refreshToken).Error
 
-	return tx.Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
+
+	return
 }
 
 func (g *gormAuthRepository) FindRefreshToken(refreshToken string) (result *entity.User, err error) {
