@@ -34,6 +34,7 @@ func (as *authService) CreateToken(req *resource.CreateTokenRequest) (res *resou
 		return
 	}
 
+
 	// 1-1. 없으면 CreateUser 사용해서 저장 후 로직 진행(2번)
 	if !user.IsUsed {
 		err = repository.NewRepository().CreateUser(req.Id, req.Provider)
@@ -122,11 +123,10 @@ func (as *authService) UpdateRefreshToken(req *resource.UpdateTokenRequest) (res
 	// }
 
 	// 1-2. refresh 값이 있으면 access token 발급
-	if token != nil {
-		userId = uint64(token.ID)
-	} else {
+	if token == nil {
 		return
 	}
+	userId = uint64(token.ID)
 
 	exp := time.Now().Add(time.Minute * 15).Unix()
 	accessToken, err := CreateAccessToken(userId, exp)
