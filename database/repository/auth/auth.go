@@ -33,12 +33,13 @@ func (g *gormAuthRepository) FindUserByUserInfo(email, provider string) (user *e
 	return user, tx.Error
 }
 
-func (g *gormAuthRepository) CreateUser(email, provider string) error {
+func (g *gormAuthRepository) CreateUser(email, provider string) (err error) {
 	// TODO: 트랜잭션 고려
 	// 	INSERT
 	//   INTO "user"(nickname, profile, provider, refresh_token, is_used, email)
 	// VALUES('', '', 'google', '', true, 'suhy427@gmail.com');
-	tx := g.db.Save(&entity.User{
+	tx := g.db.Begin()
+	tx.Save(&entity.User{
 		Nickname:     "",
 		Profile:      "",
 		Provider:     provider,
@@ -46,8 +47,13 @@ func (g *gormAuthRepository) CreateUser(email, provider string) error {
 		IsUsed:       true,
 		Email:        email,
 	})
+	if tx.Error != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
 
-	return tx.Error
+	return
 }
 
 func (g *gormAuthRepository) UpdateRefreshToken(userId uint64, refreshToken string) error {
