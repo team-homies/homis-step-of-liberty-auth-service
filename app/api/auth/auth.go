@@ -19,6 +19,9 @@ func SetApis(route fiber.Router) {
 	// 사용자 정보 조회
 	route.Get(constant.GetPath().Auth.GetUserInfo, middleware.JWTMiddleware, h.GetUserInfo)
 
+	// 사용자 본인 정보 수정
+	route.Get(constant.GetPath().Auth.UpdateUserInfo, middleware.JWTMiddleware, h.UpdateUserInfo)
+
 	// 시각적 성취도 조회
 	// route.Get(constant.GetPath().Auth.GetVisualAchievement, middleware.JWTMiddleware, h.GetVisualAchievement)
 

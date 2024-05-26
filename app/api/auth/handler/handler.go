@@ -12,6 +12,7 @@ type handler interface {
 	CreateToken(c *fiber.Ctx) error
 	UpdateRefreshToken(c *fiber.Ctx) error
 	GetUserInfo(c *fiber.Ctx) error
+	UpdateUserInfo(c *fiber.Ctx) error
 }
 
 type authHandler struct {
@@ -62,4 +63,14 @@ func (h *authHandler) GetUserInfo(c *fiber.Ctx) error {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
 	}
 	return ctx.HttpOK(res)
+}
+
+func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) error {
+	ctx := fiberkit.FiberKit{C: c}
+	req := new(resource.CreateTokenRequest)
+	err := ctx.C.BodyParser(req)
+	if err != nil {
+		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
+	}
+	return ctx.HttpOK(err)
 }
