@@ -5,7 +5,9 @@ go 1.22
 toolchain go1.22.1
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gofiber/fiber/v2 v2.52.4
+	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/spf13/viper v1.18.2
 	google.golang.org/grpc v1.59.0
 	google.golang.org/protobuf v1.31.0
