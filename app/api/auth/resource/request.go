@@ -13,3 +13,8 @@ type UpdateTokenRequest struct {
 // type UserInfoRequest struct {
 // 	UserId uint64 `json:"id"`
 // }
+
+type UserInfoUpdateRequest struct {
+	Nickname string `json:"nickname"`
+	Profile  string `json:"profile"`
+}
