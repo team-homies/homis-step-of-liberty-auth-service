@@ -14,7 +14,8 @@ type UpdateTokenRequest struct {
 // 	UserId uint64 `json:"id"`
 // }
 
-type UserInfoUpdateRequest struct {
+type UpdateUserInfoRequest struct {
+	Id       uint   `json:"id"`
 	Nickname string `json:"nickname"`
 	Profile  string `json:"profile"`
 }
