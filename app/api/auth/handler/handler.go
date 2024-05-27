@@ -66,11 +66,11 @@ func (h *authHandler) GetUserInfo(c *fiber.Ctx) error {
 }
 
 // 사용자 본인 정보 수정 body : Nickname, Propile
-func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) (err error) {
+func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
 
 	req := new(resource.UpdateUserInfoRequest)
-	err = ctx.C.BodyParser(req)
+	err := ctx.C.BodyParser(req)
 	if err != nil {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
 	}
