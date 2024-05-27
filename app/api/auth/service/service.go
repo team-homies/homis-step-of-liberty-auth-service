@@ -175,6 +175,7 @@ func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, er
 	return res, err
 }
 
+// 사용자 본인 정보 수정 body : Nickname, Propile
 func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err error) {
 	authRepository := repository.NewRepository()
 

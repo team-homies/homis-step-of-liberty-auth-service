@@ -12,7 +12,7 @@ type handler interface {
 	CreateToken(c *fiber.Ctx) error
 	UpdateRefreshToken(c *fiber.Ctx) error
 	GetUserInfo(c *fiber.Ctx) error
-	UpdateUserInfo(c *fiber.Ctx) error
+	UpdateUserInfo(c *fiber.Ctx) (err error)
 }
 
 type authHandler struct {
@@ -65,10 +65,21 @@ func (h *authHandler) GetUserInfo(c *fiber.Ctx) error {
 	return ctx.HttpOK(res)
 }
 
-func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) error {
+// 사용자 본인 정보 수정 body : Nickname, Propile
+func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) (err error) {
 	ctx := fiberkit.FiberKit{C: c}
-	req := new(resource.CreateTokenRequest)
-	err := ctx.C.BodyParser(req)
+
+	req := new(resource.UpdateUserInfoRequest)
+	err = ctx.C.BodyParser(req)
+	if err != nil {
+		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
+	}
+
+	// 1. userId값 받아오기
+	req.Id = uint(ctx.GetLocalsInt("userId"))
+
+	// 2. 서비스 함수 실행
+	err = h.service.UpdateUserInfo(req)
 	if err != nil {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
 	}

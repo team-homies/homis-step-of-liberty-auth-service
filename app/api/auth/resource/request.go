@@ -14,6 +14,7 @@ type UpdateTokenRequest struct {
 // 	UserId uint64 `json:"id"`
 // }
 
+// 사용자 본인 정보 수정
 type UpdateUserInfoRequest struct {
 	Id       uint   `json:"id"`
 	Nickname string `json:"nickname"`
