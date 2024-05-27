@@ -20,6 +20,6 @@ func SetApis(route fiber.Router) {
 	route.Get(constant.GetPath().Auth.GetUserInfo, middleware.JWTMiddleware, h.GetUserInfo)
 
 	// 시각적 성취도 조회
-	// route.Get(constant.GetPath().Auth.GetVisualAchievement, middleware.JWTMiddleware, h.GetVisualAchievement)
+	route.Get(constant.GetPath().Auth.GetVisual, middleware.JWTMiddleware, h.GetVisual)
 
 }

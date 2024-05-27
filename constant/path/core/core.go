@@ -27,4 +27,5 @@ type AuthPath struct {
 	CreateToken        string
 	UpdateRefreshToken string
 	GetUserInfo        string
+	GetVisual          string
 }
