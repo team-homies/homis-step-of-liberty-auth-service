@@ -65,10 +65,13 @@ func (h *authHandler) GetUserInfo(c *fiber.Ctx) error {
 	return ctx.HttpOK(res)
 }
 
+// 시각적 성취도 조회
 func (h *authHandler) FindVisual(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
+
+	// 1. Id값 받아오기
 	userId := ctx.GetLocalsInt("userId")
-	res, err := h.service.UserInfo(uint(userId))
+	res, err := h.service.FindVisual(uint(userId))
 	if err != nil {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
 	}
