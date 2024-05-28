@@ -19,11 +19,17 @@ type UserInfoResponse struct {
 }
 
 type FindVisualResponse struct {
+	Id       uint   `json:"id"`
+	Code     string `json:"code"`
+	Name     string `json:"name"`
+	Percent  int    `json:"percent"`
+	ImageUrl string `json:"image_url"`
+}
+
+type FindVisualCodeResponse struct {
 	Id           uint   `json:"id"`
 	Code         string `json:"code"`
 	Name         string `json:"name"`
 	DisplayLevel int    `json:"display_level"`
-	Percent      int    `json:"percent"`
 	Description  string `json:"description"`
-	ImageUrl     string `json:"image_url"`
 }
