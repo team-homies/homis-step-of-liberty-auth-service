@@ -24,7 +24,8 @@ func GetPath() *core.InternalApi {
 				CreateToken:        "/login",
 				UpdateRefreshToken: "/user",
 				GetUserInfo:        "/user",
-				GetVisual:          "/user/achieve",
+				FindVisual:         "/user/achieve",
+				FindVisualCode:     "/user/achieve/code",
 			},
 		}
 	})

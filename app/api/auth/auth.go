@@ -20,6 +20,9 @@ func SetApis(route fiber.Router) {
 	route.Get(constant.GetPath().Auth.GetUserInfo, middleware.JWTMiddleware, h.GetUserInfo)
 
 	// 시각적 성취도 조회
-	route.Get(constant.GetPath().Auth.GetVisual, middleware.JWTMiddleware, h.GetVisual)
+	route.Get(constant.GetPath().Auth.FindVisual, middleware.JWTMiddleware, h.FindVisual)
+
+	// 시각적 성취도 코드 조회
+	route.Get(constant.GetPath().Auth.FindVisual, middleware.JWTMiddleware, h.FindVisual)
 
 }
