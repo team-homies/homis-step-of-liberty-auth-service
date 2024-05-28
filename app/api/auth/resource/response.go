@@ -20,6 +20,7 @@ type UserInfoResponse struct {
 
 type FindVisualResponse struct {
 	Id       uint   `json:"id"`
+	UserId   uint   `json:"user_id"`
 	Code     string `json:"code"`
 	Name     string `json:"name"`
 	Percent  int    `json:"percent"`
@@ -28,6 +29,7 @@ type FindVisualResponse struct {
 
 type FindVisualCodeResponse struct {
 	Id           uint   `json:"id"`
+	UserId       uint   `json:"user_id"`
 	Code         string `json:"code"`
 	Name         string `json:"name"`
 	DisplayLevel int    `json:"display_level"`
