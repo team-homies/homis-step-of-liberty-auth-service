@@ -14,6 +14,7 @@ type AuthService interface {
 	CreateToken(req *resource.CreateTokenRequest) (res *resource.CreateTokenResponse, err error)
 	UpdateRefreshToken(req *resource.UpdateTokenRequest) (res *resource.UpdateTokenResponse, err error)
 	UserInfo(userId uint) (res *resource.UserInfoResponse, err error)
+	FindVisual(userId uint) (res *resource.FindVisualResponse, err error)
 }
 
 func NewAuthService() AuthService {
@@ -33,7 +34,6 @@ func (as *authService) CreateToken(req *resource.CreateTokenRequest) (res *resou
 	if err != nil {
 		return
 	}
-
 
 	// 1-1. 없으면 CreateUser 사용해서 저장 후 로직 진행(2번)
 	if !user.IsUsed {
@@ -172,4 +172,25 @@ func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, er
 	}
 
 	return res, err
+}
+
+// 시각적 성취도 조회
+func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse, err error) {
+	userRepository := repository.NewRepository()
+	res = new(resource.FindVisualResponse)
+
+	// 1.  만들어놓은 레포지토리를 사용해서 데이터를 가져온다
+	visualFind, err := userRepository.FindVisual(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. 가져온 데이터를 하나의 객체(res)에 합친다
+	res = &resource.FindVisualResponse{
+		UserId: visualFind.UserId,
+	}
+
+	// 3. 리턴
+	return
+
 }
