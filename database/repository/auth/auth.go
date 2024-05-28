@@ -103,7 +103,7 @@ func (g *gormAuthRepository) FindVisual(userId uint) (res *entity.Visual, err er
 
 	// 2. gorm 적용
 	tx := g.db
-	err = tx.Model(&entity.Visual{}).Select("code", "name", "percent", "image_url").Where("id = ?", userId).First(&res).Error
+	err = tx.Model(&entity.Visual{}).Select("code", "name", "percent", "image_url").Where("user_id = ?", userId).First(&res).Error
 
 	if err != nil {
 		return
