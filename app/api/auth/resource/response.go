@@ -17,3 +17,13 @@ type UserInfoResponse struct {
 	Nickname string `json:"nickname"`
 	Profile  string `json:"profile"`
 }
+
+type FindVisualResponse struct {
+	Id           uint   `json:"id"`
+	Code         string `json:"code"`
+	Name         string `json:"name"`
+	DisplayLevel int    `json:"display_level"`
+	Percent      int    `json:"percent"`
+	Description  string `json:"description"`
+	ImageUrl     string `json:"image_url"`
+}

@@ -12,7 +12,7 @@ type handler interface {
 	CreateToken(c *fiber.Ctx) error
 	UpdateRefreshToken(c *fiber.Ctx) error
 	GetUserInfo(c *fiber.Ctx) error
-	GetVisual(c *fiber.Ctx) error
+	FindVisual(c *fiber.Ctx) error
 }
 
 type authHandler struct {
@@ -65,7 +65,7 @@ func (h *authHandler) GetUserInfo(c *fiber.Ctx) error {
 	return ctx.HttpOK(res)
 }
 
-func (h *authHandler) GetVisual(c *fiber.Ctx) error {
+func (h *authHandler) FindVisual(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
 	userId := ctx.GetLocalsInt("userId")
 	res, err := h.service.UserInfo(uint(userId))
