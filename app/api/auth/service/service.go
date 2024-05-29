@@ -2,6 +2,7 @@ package service
 
 import (
 	"main/app/api/auth/resource"
+	"main/common/util"
 	"main/config"
 	"main/database/repository"
 	"time"
@@ -178,19 +179,27 @@ func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, er
 func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse, err error) {
 	userRepository := repository.NewRepository()
 	res = new(resource.FindVisualResponse)
+	// 1. userId를 이용해서 user의 수집률을 구하고 변수에 담는다
+	var collectRate uint
 
-	// 1.  만들어놓은 레포지토리를 사용해서 데이터를 가져온다
-	visualFind, err := userRepository.FindVisual(userId)
+	// 2. 수집률로 조건식을 사용하여 코드분류
+	code := util.PercentCal(collectRate)
+
+	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
+	visualFind, err := userRepository.FindVisual(code)
 	if err != nil {
 		return nil, err
 	}
 
-	// 2. 가져온 데이터를 하나의 객체(res)에 합친다
+	// 4. 가져온 데이터를 하나의 객체(res)에 합친다
 	res = &resource.FindVisualResponse{
-		UserId: visualFind.UserId,
+		Name:     visualFind.Name,
+		ImageUrl: visualFind.ImageUrl,
+		Percent:  int(collectRate),
+		Code:     visualFind.Code,
 	}
 
-	// 3. 리턴
+	// 5. 리턴
 	return
 
 }

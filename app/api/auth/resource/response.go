@@ -18,18 +18,16 @@ type UserInfoResponse struct {
 	Profile  string `json:"profile"`
 }
 
+// 시각적 성취도 조회
 type FindVisualResponse struct {
-	Id       uint   `json:"id"`
-	UserId   uint   `json:"user_id"`
 	Code     string `json:"code"`
 	Name     string `json:"name"`
 	Percent  int    `json:"percent"`
 	ImageUrl string `json:"image_url"`
 }
 
+// 시각적 성취도 코드 조회
 type FindVisualCodeResponse struct {
-	Id           uint   `json:"id"`
-	UserId       uint   `json:"user_id"`
 	Code         string `json:"code"`
 	Name         string `json:"name"`
 	DisplayLevel int    `json:"display_level"`

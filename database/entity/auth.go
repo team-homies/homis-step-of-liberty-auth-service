@@ -10,7 +10,6 @@ type User struct {
 	Provider     string `gorm:"column:provider;not null"`
 	RefreshToken string `gorm:"column:refresh_token;not null"`
 	IsUsed       bool   `gorm:"column:is_used;not null"`
-	Visual       Visual
 }
 
 func (User) TableName() string {
@@ -19,7 +18,6 @@ func (User) TableName() string {
 
 type Visual struct {
 	gorm.Model
-	UserId       uint   `gorm:"column:user_id;foreignKey:UserId;"`
 	Code         string `gorm:"column:code;not null"`
 	Name         string `gorm:"column:name;not null"`
 	DisplayLevel int    `gorm:"column:display_level;not null"`

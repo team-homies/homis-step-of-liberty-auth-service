@@ -13,7 +13,3 @@ type UpdateTokenRequest struct {
 // type UserInfoRequest struct {
 // 	UserId uint64 `json:"id"`
 // }
-
-type FindVisualRequest struct {
-	UserId uint `json:"user_id"`
-}

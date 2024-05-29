@@ -71,6 +71,8 @@ func (h *authHandler) FindVisual(c *fiber.Ctx) error {
 
 	// 1. Id값 받아오기
 	userId := ctx.GetLocalsInt("userId")
+
+	// 2. 서비스함수 실행
 	res, err := h.service.FindVisual(uint(userId))
 	if err != nil {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
