@@ -89,7 +89,7 @@ func (h *authHandler) FindVisualCode(c *fiber.Ctx) error {
 	userId := ctx.GetLocalsInt("userId")
 
 	// 2. 서비스함수 실행
-	res, err := h.service.FindVisual(uint(userId))
+	res, err := h.service.FindVisualCode(uint(userId))
 	if err != nil {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
 	}
