@@ -13,6 +13,7 @@ type handler interface {
 	UpdateRefreshToken(c *fiber.Ctx) error
 	GetUserInfo(c *fiber.Ctx) error
 	FindVisual(c *fiber.Ctx) error
+	FindVisualCode(c *fiber.Ctx) error
 }
 
 type authHandler struct {
@@ -67,6 +68,21 @@ func (h *authHandler) GetUserInfo(c *fiber.Ctx) error {
 
 // 시각적 성취도 조회
 func (h *authHandler) FindVisual(c *fiber.Ctx) error {
+	ctx := fiberkit.FiberKit{C: c}
+
+	// 1. Id값 받아오기
+	userId := ctx.GetLocalsInt("userId")
+
+	// 2. 서비스함수 실행
+	res, err := h.service.FindVisual(uint(userId))
+	if err != nil {
+		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
+	}
+	return ctx.HttpOK(res)
+}
+
+// 시각적 성취도 코드 조회
+func (h *authHandler) FindVisualCode(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
 
 	// 1. Id값 받아오기
