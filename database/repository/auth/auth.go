@@ -13,6 +13,7 @@ type AuthRepository interface {
 	FindRefreshToken(refreshToken string) (result *entity.User, err error)
 	FindUserInfo(userId uint) (user *entity.User, err error)
 	FindVisual(Code string) (user *entity.Visual, err error)
+	FindVisualCode(Code string) (res *entity.Visual, err error)
 }
 
 type gormAuthRepository struct {
@@ -97,13 +98,30 @@ func (g *gormAuthRepository) FindUserInfo(userId uint) (user *entity.User, err e
 // 시각적 성취도 조회
 func (g *gormAuthRepository) FindVisual(Code string) (res *entity.Visual, err error) {
 	// 1. 쿼리작성
-	// 	select *
+	// 	select "code", "name", "percent", "image_url"
 	// 	from visual v
-	//    where id = 3;
+	//    where code = "AM";
 
 	// 2. gorm 적용
 	tx := g.db
 	err = tx.Model(&entity.Visual{}).Select("code", "name", "percent", "image_url").Where("code = ?", Code).First(&res).Error
+
+	if err != nil {
+		return
+	}
+	return
+}
+
+// 시각적 성취도 코드 조회
+func (g *gormAuthRepository) FindVisualCode(Code string) (res *entity.Visual, err error) {
+	// 1. 쿼리작성
+	// 	select "code", "name", "display_level", "description"
+	// 	from visual v
+	//    where code = "AM";
+
+	// 2. gorm 적용
+	tx := g.db
+	err = tx.Model(&entity.Visual{}).Select("code", "name", "display_level", "description").Where("code = ?", Code).First(&res).Error
 
 	if err != nil {
 		return
