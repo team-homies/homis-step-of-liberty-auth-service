@@ -16,6 +16,7 @@ type AuthService interface {
 	UpdateRefreshToken(req *resource.UpdateTokenRequest) (res *resource.UpdateTokenResponse, err error)
 	UserInfo(userId uint) (res *resource.UserInfoResponse, err error)
 	FindVisual(userId uint) (res *resource.FindVisualResponse, err error)
+	FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error)
 }
 
 func NewAuthService() AuthService {
@@ -194,9 +195,38 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 	// 4. 가져온 데이터를 하나의 객체(res)에 합친다
 	res = &resource.FindVisualResponse{
 		Name:     visualFind.Name,
-		ImageUrl: visualFind.ImageUrl,
-		Percent:  int(collectRate),
 		Code:     visualFind.Code,
+		Percent:  int(collectRate),
+		ImageUrl: visualFind.ImageUrl,
+	}
+
+	// 5. 리턴
+	return
+
+}
+
+// 시각적 성취도 코드 조회
+func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error) {
+	userRepository := repository.NewRepository()
+	res = new(resource.FindVisualCodeResponse)
+	// 1. userId를 이용해서 user의 수집률을 구하고 변수에 담는다
+	var collectRate uint
+
+	// 2. 수집률로 조건식을 사용하여 코드분류
+	code := util.PercentCal(collectRate)
+
+	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
+	visualFind, err := userRepository.FindVisualCode(code)
+	if err != nil {
+		return nil, err
+	}
+
+	// 4. 가져온 데이터를 하나의 객체(res)에 합친다
+	res = &resource.FindVisualCodeResponse{
+		Name:         visualFind.Name,
+		Code:         visualFind.Code,
+		DisplayLevel: visualFind.DisplayLevel,
+		Description:  visualFind.Description,
 	}
 
 	// 5. 리턴
