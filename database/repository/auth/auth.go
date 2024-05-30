@@ -12,6 +12,7 @@ type AuthRepository interface {
 	UpdateRefreshToken(userId uint64, refreshToken string) error
 	FindRefreshToken(refreshToken string) (result *entity.User, err error)
 	FindUserInfo(userId uint) (user *entity.User, err error)
+	UpdateUserInfo(user *entity.User) (err error)
 }
 
 type gormAuthRepository struct {
@@ -90,5 +91,26 @@ func (g *gormAuthRepository) FindUserInfo(userId uint) (user *entity.User, err e
 	tx := g.db.Where("id = ? AND is_used = true", userId).Find(&user)
 
 	return user, tx.Error
+
+}
+
+// 사용자 본인 정보 수정 body : Nickname, Propile
+func (g *gormAuthRepository) UpdateUserInfo(user *entity.User) (err error) {
+	// 1. 쿼리작성
+	// 	update "user"
+	//    set nickname  = 'woorim', profile  = 'image.url'
+	//  where "user".id = 8 and "user".is_used is not null;
+
+	// 2. gorm 적용
+	tx := g.db.Begin()
+	err = tx.Model(&entity.User{}).Select("nickname", "profile").Where("id = ? AND is_used = true", user.ID).Updates(&user).Error
+
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
+
+	return
 
 }
