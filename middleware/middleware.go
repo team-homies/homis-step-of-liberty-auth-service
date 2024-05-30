@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"main/config"
+	"main/constant/common"
 	"strconv"
 	"time"
 
@@ -32,7 +33,7 @@ func JWTMiddleware(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	c.Locals("userId", userIdNumber)
+	c.Locals(common.LOCALS_USER_ID, userIdNumber)
 
 	return c.Next()
 }

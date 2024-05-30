@@ -1,5 +1,9 @@
 package common
 
+// middleware
+const LOCALS_USER_ID string = "userId"
+
+// 시각적 성취도 단계
 const (
 	Baby     string = "AM"
 	Rookie   string = "BM"
@@ -8,7 +12,7 @@ const (
 	Ultimate string = "AM"
 )
 
-// 수집률로 시각적 성취도 분류
+// 수집률로 시각적 성취도 단계 분류
 func PercentCal(percentage uint) (Code string) {
 	switch {
 	case percentage >= 80:
