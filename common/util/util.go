@@ -17,20 +17,3 @@ func StructToMap(data any) (result map[string]any, err error) {
 
 	return
 }
-
-// 수집률로 시각적 성취도 분류
-func PercentCal(percentage uint) (Code string) {
-	switch {
-	case percentage >= 80:
-		Code = "EM"
-	case percentage >= 60:
-		Code = "DM"
-	case percentage >= 40:
-		Code = "CM"
-	case percentage >= 20:
-		Code = "BM"
-	default:
-		Code = "AM"
-	}
-	return
-}
