@@ -4,7 +4,7 @@
 // - protoc             v5.26.1
 // source: app/grpc/proto/userlist/userlist.proto
 
-package dex
+package userlist
 
 import (
 	context "context"
