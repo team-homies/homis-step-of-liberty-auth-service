@@ -2,13 +2,16 @@ package service
 
 import (
 	"main/app/api/auth/resource"
+	"main/app/grpc/proto/dex"
 	"main/config"
 	"main/constant/common"
 	"main/database/repository"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 )
 
 type AuthService interface {
@@ -232,4 +235,31 @@ func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCode
 	// 5. 리턴
 	return
 
+}
+
+// 수집률 grpc
+func HistoryGetRate(c *fiber.Ctx) (rate string, err error) {
+	// 0. grpc 연결
+	var address string
+	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
+		address = viper.GetString(config.GRPC_HISTORY_PORT)
+	} else {
+		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
+	}
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	dexClient := dex.NewDexEventServiceClient(conn)
+
+	// 1. 수집률 grpc 함수
+	res, err := dexClient.GetRate()
+	if err != nil {
+		return rate, nil
+	}
+	rate = res.
+
+	return rate, nil
 }
