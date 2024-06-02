@@ -262,4 +262,22 @@ func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCode
 
 }
 
-// 수집률 grpc
+// // 수집률 grpc
+// func GetRate(c *fiber.Ctx) error {
+
+// 	// 0. grpc 연결 맺기
+// 	var address string
+// 	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
+// 		address = viper.GetString(config.GRPC_HISTORY_PORT)
+// 	} else {
+// 		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
+// 	}
+// 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer conn.Close()
+
+// 	dexClient := dex.DexEventServiceClient(conn)
+
+// }

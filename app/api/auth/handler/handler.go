@@ -4,6 +4,7 @@ import (
 	"main/app/api/auth/resource"
 	"main/app/api/auth/service"
 	"main/common/fiberkit"
+	"main/constant/common"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -59,7 +60,7 @@ func (h *authHandler) UpdateRefreshToken(c *fiber.Ctx) error {
 
 func (h *authHandler) GetUserInfo(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
-	userId := ctx.GetLocalsInt("userId")
+	userId := ctx.GetLocalsInt(common.LOCALS_USER_ID)
 	res, err := h.service.UserInfo(uint(userId))
 	if err != nil {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
@@ -78,7 +79,7 @@ func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) error {
 	}
 
 	// 1. userId값 받아오기
-	req.Id = uint(ctx.GetLocalsInt("userId"))
+	req.Id = uint(ctx.GetLocalsInt(common.LOCALS_USER_ID))
 
 	// 2. 서비스 함수 실행
 	err = h.service.UpdateUserInfo(req)
@@ -93,7 +94,7 @@ func (h *authHandler) FindVisual(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
 
 	// 1. Id값 받아오기
-	userId := ctx.GetLocalsInt("userId")
+	userId := ctx.GetLocalsInt(common.LOCALS_USER_ID)
 
 	// 2. 서비스함수 실행
 	res, err := h.service.FindVisual(uint(userId))
@@ -108,7 +109,7 @@ func (h *authHandler) FindVisualCode(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
 
 	// 1. Id값 받아오기
-	userId := ctx.GetLocalsInt("userId")
+	userId := ctx.GetLocalsInt(common.LOCALS_USER_ID)
 
 	// 2. 서비스함수 실행
 	res, err := h.service.FindVisualCode(uint(userId))

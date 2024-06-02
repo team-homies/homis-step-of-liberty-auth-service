@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DexEventServiceClient interface {
 	FindDexEvent(ctx context.Context, in *DexEventRequest, opts ...grpc.CallOption) (*DexEventResponse, error)
-	GetRate(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RateResponse, error)
+	GetRate(ctx context.Context, in *RateRequest, opts ...grpc.CallOption) (*RateResponse, error)
 }
 
 type dexEventServiceClient struct {
@@ -44,7 +43,7 @@ func (c *dexEventServiceClient) FindDexEvent(ctx context.Context, in *DexEventRe
 	return out, nil
 }
 
-func (c *dexEventServiceClient) GetRate(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RateResponse, error) {
+func (c *dexEventServiceClient) GetRate(ctx context.Context, in *RateRequest, opts ...grpc.CallOption) (*RateResponse, error) {
 	out := new(RateResponse)
 	err := c.cc.Invoke(ctx, "/grpc.DexEventService/GetRate", in, out, opts...)
 	if err != nil {
@@ -58,7 +57,7 @@ func (c *dexEventServiceClient) GetRate(ctx context.Context, in *emptypb.Empty, 
 // for forward compatibility
 type DexEventServiceServer interface {
 	FindDexEvent(context.Context, *DexEventRequest) (*DexEventResponse, error)
-	GetRate(context.Context, *emptypb.Empty) (*RateResponse, error)
+	GetRate(context.Context, *RateRequest) (*RateResponse, error)
 	mustEmbedUnimplementedDexEventServiceServer()
 }
 
@@ -69,7 +68,7 @@ type UnimplementedDexEventServiceServer struct {
 func (UnimplementedDexEventServiceServer) FindDexEvent(context.Context, *DexEventRequest) (*DexEventResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindDexEvent not implemented")
 }
-func (UnimplementedDexEventServiceServer) GetRate(context.Context, *emptypb.Empty) (*RateResponse, error) {
+func (UnimplementedDexEventServiceServer) GetRate(context.Context, *RateRequest) (*RateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRate not implemented")
 }
 func (UnimplementedDexEventServiceServer) mustEmbedUnimplementedDexEventServiceServer() {}
@@ -104,7 +103,7 @@ func _DexEventService_FindDexEvent_Handler(srv interface{}, ctx context.Context,
 }
 
 func _DexEventService_GetRate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(RateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -116,7 +115,7 @@ func _DexEventService_GetRate_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/grpc.DexEventService/GetRate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DexEventServiceServer).GetRate(ctx, req.(*emptypb.Empty))
+		return srv.(DexEventServiceServer).GetRate(ctx, req.(*RateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
