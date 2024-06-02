@@ -4,6 +4,7 @@ import (
 	"main/app/api/auth/resource"
 	"main/config"
 	"main/constant/common"
+	"main/database/entity"
 	"main/database/repository"
 	"time"
 
@@ -15,6 +16,7 @@ type AuthService interface {
 	CreateToken(req *resource.CreateTokenRequest) (res *resource.CreateTokenResponse, err error)
 	UpdateRefreshToken(req *resource.UpdateTokenRequest) (res *resource.UpdateTokenResponse, err error)
 	UserInfo(userId uint) (res *resource.UserInfoResponse, err error)
+	UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err error)
 	FindVisual(userId uint) (res *resource.FindVisualResponse, err error)
 	FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error)
 }
@@ -174,6 +176,32 @@ func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, er
 	}
 
 	return res, err
+}
+
+// 사용자 본인 정보 수정 body : Nickname, Propile
+func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err error) {
+	authRepository := repository.NewRepository()
+
+	// 1. 검증한 userid
+	var userInfo entity.User
+	userInfo.Model.ID = req.Id
+	if req.Nickname != "" {
+		userInfo.Nickname = req.Nickname
+	}
+
+	if req.Profile != "" {
+		userInfo.Profile = req.Profile
+	}
+
+	// 2. 만들어놓은 레포지토리를 사용해서 데이터를 수정
+	err = authRepository.UpdateUserInfo(&userInfo)
+	if err != nil {
+		return
+	}
+
+	// 3. 리턴
+	return
+
 }
 
 // 시각적 성취도 조회
