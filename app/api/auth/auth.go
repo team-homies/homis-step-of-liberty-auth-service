@@ -19,4 +19,7 @@ func SetApis(route fiber.Router) {
 	// 사용자 정보 조회
 	route.Get(constant.GetPath().Auth.GetUserInfo, middleware.JWTMiddleware, h.GetUserInfo)
 
+	// 사용자 본인 정보 수정
+	route.Put(constant.GetPath().Auth.UpdateUserInfo, middleware.JWTMiddleware, h.UpdateUserInfo)
+
 }
