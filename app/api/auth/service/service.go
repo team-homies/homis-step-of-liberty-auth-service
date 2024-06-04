@@ -213,11 +213,16 @@ func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err 
 func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse, err error) {
 	userRepository := repository.NewRepository()
 	res = new(resource.FindVisualResponse)
+
 	// 1. userId를 이용해서 user의 수집률을 구하고 변수에 담는다
-	var collectRate uint
+	collectRate, err := GetRateGrpc(&fiber.Ctx{})
+	rate, err := strconv.ParseUint(collectRate.Rate, 10, 64)
+	if err != nil {
+		return nil, err
+	}
 
 	// 2. 수집률로 조건식을 사용하여 코드분류
-	code := common.PercentCal(collectRate)
+	code := common.PercentCal(rate)
 
 	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
 	visualFind, err := userRepository.FindVisual(code)
@@ -229,7 +234,7 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 	res = &resource.FindVisualResponse{
 		Name:     visualFind.Name,
 		Code:     visualFind.Code,
-		Percent:  int(collectRate),
+		Percent:  int(rate),
 		ImageUrl: visualFind.ImageUrl,
 	}
 
@@ -242,11 +247,16 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error) {
 	userRepository := repository.NewRepository()
 	res = new(resource.FindVisualCodeResponse)
+
 	// 1. userId를 이용해서 user의 수집률을 구하고 변수에 담는다
-	var collectRate uint
+	collectRate, err := GetRateGrpc(&fiber.Ctx{})
+	rate, err := strconv.ParseUint(collectRate.Rate, 10, 64)
+	if err != nil {
+		return nil, err
+	}
 
 	// 2. 수집률로 조건식을 사용하여 코드분류
-	code := common.PercentCal(collectRate)
+	code := common.PercentCal(rate)
 
 	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
 	visualFind, err := userRepository.FindVisualCode(code)
