@@ -1,15 +1,20 @@
 package service
 
 import (
+	"context"
 	"main/app/api/auth/resource"
+	"main/app/grpc/proto/dex"
 	"main/config"
 	"main/constant/common"
 	"main/database/entity"
 	"main/database/repository"
+	"strconv"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 )
 
 type AuthService interface {
@@ -263,21 +268,40 @@ func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCode
 }
 
 // // 수집률 grpc
-// func GetRate(c *fiber.Ctx) error {
+func GetRateGrpc(c *fiber.Ctx) (res *dex.RateResponse, err error) {
+	// 0. grpc 연결 맺기
+	var address string
+	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
+		address = viper.GetString(config.GRPC_HISTORY_PORT)
+	} else {
+		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
+	}
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
 
-// 	// 0. grpc 연결 맺기
-// 	var address string
-// 	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
-// 		address = viper.GetString(config.GRPC_HISTORY_PORT)
-// 	} else {
-// 		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
-// 	}
-// 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer conn.Close()
+	dexClient := dex.NewDexEventServiceClient(conn)
+	ctx := context.Background()
 
-// 	dexClient := dex.DexEventServiceClient(conn)
+	// 1. header에서 userid 추출
+	userIdVerification := c.Get(common.LOCALS_USER_ID)
 
-// }
+	// userid 형변환
+	userIdGet, err := strconv.ParseUint(userIdVerification, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. 수집률 grpc 호출
+	res, err = dexClient.GetRate(ctx, &dex.RateRequest{
+		UserId: userIdGet,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+
+}
