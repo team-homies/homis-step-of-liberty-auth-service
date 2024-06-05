@@ -16,17 +16,21 @@ type server struct {
 
 func (s *server) GetUserList(ctx context.Context, in *userlist.UserListRequest) (*userlist.UserListResponse, error) {
 	userlistRepository := repository.NewRepository()
-	// 1. 유저리스트 레포지토리
+
+	// 1. 레포지토리 쿼리에서 유저리스트 함수 호출
 	res, err := userlistRepository.FindUserList(uint(in.UserId))
 	if err != nil {
 		return nil, err
 	}
 
-	// 2. 수집률 담기
-	var per uint
+	// 2. 수집률을 담기 위해 수집률grpc호출
+	per, err := common.GetRateGrpc(uint(in.UserId))
+	if err != nil {
+		return nil, err
+	}
 
-	// 3. 유저코드
-	code := common.PercentCal(per)
+	// 3. 유저코드를 담기 위해 성취도 단계 함수 호출
+	code := common.PercentCal(uint(per))
 
 	// 4. 리턴
 	return &userlist.UserListResponse{
