@@ -24,6 +24,7 @@ type AuthService interface {
 	UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err error)
 	FindVisual(userId uint) (res *resource.FindVisualResponse, err error)
 	FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error)
+	GetRateGrpc(c *fiber.Ctx) (res *dex.RateResponse, err error)
 }
 
 func NewAuthService() AuthService {
@@ -214,9 +215,30 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 	userRepository := repository.NewRepository()
 	res = new(resource.FindVisualResponse)
 
+	// 0. grpc 연동
+	var address string
+	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
+		address = viper.GetString(config.GRPC_HISTORY_PORT)
+	} else {
+		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
+	}
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	dexClient := dex.NewDexEventServiceClient(conn)
+
 	// 1. userId를 이용해서 user의 수집률을 구하고 변수에 담는다
-	collectRate, err := GetRateGrpc(&fiber.Ctx{})
-	rate, err := strconv.ParseUint(collectRate.Rate, 10, 64)
+	rateString, err := dexClient.GetRate(context.Background(), &dex.RateRequest{
+		UserId: uint64(userId),
+	})
+	if err != nil {
+		return nil, err
+	}
+	// 형변환
+	rate, err := strconv.ParseUint(rateString.Rate, 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -248,9 +270,30 @@ func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCode
 	userRepository := repository.NewRepository()
 	res = new(resource.FindVisualCodeResponse)
 
+	// 0. grpc 연동
+	var address string
+	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
+		address = viper.GetString(config.GRPC_HISTORY_PORT)
+	} else {
+		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
+	}
+	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	dexClient := dex.NewDexEventServiceClient(conn)
+
 	// 1. userId를 이용해서 user의 수집률을 구하고 변수에 담는다
-	collectRate, err := GetRateGrpc(&fiber.Ctx{})
-	rate, err := strconv.ParseUint(collectRate.Rate, 10, 64)
+	rateString, err := dexClient.GetRate(context.Background(), &dex.RateRequest{
+		UserId: uint64(userId),
+	})
+	if err != nil {
+		return nil, err
+	}
+	// 형변환
+	rate, err := strconv.ParseUint(rateString.Rate, 10, 64)
 	if err != nil {
 		return nil, err
 	}
@@ -278,40 +321,36 @@ func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCode
 }
 
 // // 수집률 grpc
-func GetRateGrpc(c *fiber.Ctx) (res *dex.RateResponse, err error) {
-	// 0. grpc 연결 맺기
-	var address string
-	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
-		address = viper.GetString(config.GRPC_HISTORY_PORT)
-	} else {
-		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
-	}
-	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
-	if err != nil {
-		return nil, err
-	}
-	defer conn.Close()
+// func GetRateGrpc(c *fiber.Ctx) error {
+// 	ctx := fiberkit.FiberKit{C: c}
 
-	dexClient := dex.NewDexEventServiceClient(conn)
-	ctx := context.Background()
+// 	// 0. grpc 연결 맺기
+// 	var address string
+// 	if viper.GetString(config.GRPC_HISTORY_HOST) == "localhost" {
+// 		address = viper.GetString(config.GRPC_HISTORY_PORT)
+// 	} else {
+// 		address = viper.GetString(config.GRPC_HISTORY_HOST) + viper.GetString(config.GRPC_HISTORY_PORT)
+// 	}
+// 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer conn.Close()
 
-	// 1. header에서 userid 추출
-	userIdVerification := c.Get(common.LOCALS_USER_ID)
+// 	dexClient := dex.NewDexEventServiceClient(conn)
+// 	// 1. header에서 userid 추출
+// 	userIdVerification := ctx.GetLocalsInt(common.LOCALS_USER_ID)
 
-	// userid 형변환
-	userIdGet, err := strconv.ParseUint(userIdVerification, 10, 64)
-	if err != nil {
-		return nil, err
-	}
+// 	// userid 형변환
 
-	// 2. 수집률 grpc 호출
-	res, err = dexClient.GetRate(ctx, &dex.RateRequest{
-		UserId: userIdGet,
-	})
-	if err != nil {
-		return nil, err
-	}
+// 	// 2. 수집률 grpc 호출
+// 	res, err = dexClient.GetRate(context.Background(), &dex.RateRequest{
+// 		UserId: uint64(userIdVerification),
+// 	})
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	return res, nil
+// 	return res, nil
 
-}
+// }
