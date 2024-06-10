@@ -98,12 +98,11 @@ func (g *gormAuthRepository) FindUserInfo(userId uint) (user *entity.User, err e
 
 // 사용자 본인 정보 수정 body : Nickname, Propile
 func (g *gormAuthRepository) UpdateUserInfo(user *entity.User) (err error) {
-	// 1. 쿼리작성
 	// 	update "user"
 	//    set nickname  = 'woorim', profile  = 'image.url'
 	//  where "user".id = 8 and "user".is_used is not null;
 
-	// 2. gorm 적용
+	// 1. gorm 적용
 	tx := g.db.Begin()
 	err = tx.Model(&entity.User{}).Select("nickname", "profile").Where("id = ? AND is_used = true", user.ID).Updates(&user).Error
 
@@ -119,14 +118,12 @@ func (g *gormAuthRepository) UpdateUserInfo(user *entity.User) (err error) {
 
 // 시각적 성취도 조회
 func (g *gormAuthRepository) FindVisual(Code string) (res *entity.Visual, err error) {
-	// 1. 쿼리작성
 	// 	select "code", "name", "percent", "image_url"
 	// 	from visual v
 	//    where code = "AM";
 
-	// 2. gorm 적용
-	tx := g.db
-	err = tx.Model(&entity.Visual{}).Select("code", "name", "percent", "image_url").Where("code = ?", Code).First(&res).Error
+	// 1. gorm 적용
+	err = g.db.Model(&entity.Visual{}).Select("code", "name", "percent", "image_url").Where("code = ?", Code).First(&res).Error
 
 	if err != nil {
 		return
@@ -136,14 +133,12 @@ func (g *gormAuthRepository) FindVisual(Code string) (res *entity.Visual, err er
 
 // 시각적 성취도 코드 조회
 func (g *gormAuthRepository) FindVisualCode(Code string) (res *entity.Visual, err error) {
-	// 1. 쿼리작성
 	// 	select "code", "name", "display_level", "description"
 	// 	from visual v
 	//    where code = "AM";
 
-	// 2. gorm 적용
-	tx := g.db
-	err = tx.Model(&entity.Visual{}).Select("code", "name", "display_level", "description").Where("code = ?", Code).First(&res).Error
+	// 1. gorm 적용
+	err = g.db.Model(&entity.Visual{}).Select("code", "name", "display_level", "description").Where("code = ?", Code).First(&res).Error
 
 	if err != nil {
 		return
