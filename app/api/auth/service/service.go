@@ -2,8 +2,8 @@ package service
 
 import (
 	"main/app/api/auth/resource"
+	"main/app/api/common"
 	"main/config"
-	"main/constant/common"
 	"main/database/entity"
 	"main/database/repository"
 	"time"
@@ -180,7 +180,6 @@ func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, er
 
 // 사용자 본인 정보 수정 body : Nickname, Propile
 func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err error) {
-	authRepository := repository.NewRepository()
 
 	// 1. 검증한 userid
 	var userInfo entity.User
@@ -194,7 +193,7 @@ func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err 
 	}
 
 	// 2. 만들어놓은 레포지토리를 사용해서 데이터를 수정
-	err = authRepository.UpdateUserInfo(&userInfo)
+	err = repository.NewRepository().UpdateUserInfo(&userInfo)
 	if err != nil {
 		return
 	}
@@ -206,22 +205,21 @@ func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err 
 
 // 시각적 성취도 조회
 func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse, err error) {
-	userRepository := repository.NewRepository()
 	res = new(resource.FindVisualResponse)
 
 	// 1. 수집률 grpc 호출
 	rate, err := common.GetRateGrpc(userId)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// 2. 수집률로 조건식을 사용하여 코드분류
 	code := common.PercentCal(rate)
 
 	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
-	visualFind, err := userRepository.FindVisual(code)
+	visualFind, err := repository.NewRepository().FindVisual(code)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// 4. 가져온 데이터를 하나의 객체(res)에 합친다
@@ -239,22 +237,21 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 
 // 시각적 성취도 코드 조회
 func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error) {
-	userRepository := repository.NewRepository()
 	res = new(resource.FindVisualCodeResponse)
 
 	// 1. 수집률 grpc 호출
 	rate, err := common.GetRateGrpc(userId)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// 2. 수집률로 조건식을 사용하여 코드분류
 	code := common.PercentCal(rate)
 
 	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
-	visualFind, err := userRepository.FindVisualCode(code)
+	visualFind, err := repository.NewRepository().FindVisualCode(code)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// 4. 가져온 데이터를 하나의 객체(res)에 합친다
