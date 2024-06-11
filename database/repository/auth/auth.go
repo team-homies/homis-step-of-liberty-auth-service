@@ -96,15 +96,14 @@ func (g *gormAuthRepository) FindUserInfo(userId uint) (user *entity.User, err e
 
 // 유저 리스트 조회
 func (g *gormAuthRepository) FindUserList(userId uint) (res *entity.User, err error) {
-	// 1. 쿼리 작성
 	// 	select u.id, u.email, u.nickname, u.profile, u.created_at
 	//   from "user" u
 	//  where u.id  = 8
 	// code 추가
 
-	// 2. gorm 적용
+	// 1. gorm 적용
 	tx := g.db
-	err = tx.Model(&entity.User{}).Select("id", "email", "nickname", "profile", "created_at").Where("id = ? AND is_used = ture", userId).First(&res).Error
+	err = tx.Model(&entity.User{}).Select("id", "email", "nickname", "profile", "created_at").Where("id = ? AND is_used = true", userId).Find(&res).Error
 	if err != nil {
 		return
 	}
