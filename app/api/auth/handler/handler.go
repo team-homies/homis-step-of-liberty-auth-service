@@ -79,7 +79,7 @@ func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) error {
 	}
 
 	// 1. userId값 받아오기
-	req.Id = uint(ctx.GetLocalsInt(common.LOCALS_USER_ID))
+	req.UserId = uint(h.CommonFunc(c))
 
 	// 2. 서비스 함수 실행
 	err = h.service.UpdateUserInfo(req)
@@ -93,8 +93,8 @@ func (h *authHandler) UpdateUserInfo(c *fiber.Ctx) error {
 func (h *authHandler) FindVisual(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
 
-	// 1. Id값 받아오기
-	userId := ctx.GetLocalsInt(common.LOCALS_USER_ID)
+	// 1. userId값 받아오기
+	userId := h.CommonFunc(c)
 
 	// 2. 서비스함수 실행
 	res, err := h.service.FindVisual(uint(userId))
@@ -108,8 +108,8 @@ func (h *authHandler) FindVisual(c *fiber.Ctx) error {
 func (h *authHandler) FindVisualCode(c *fiber.Ctx) error {
 	ctx := fiberkit.FiberKit{C: c}
 
-	// 1. Id값 받아오기
-	userId := ctx.GetLocalsInt(common.LOCALS_USER_ID)
+	// 1. userId값 받아오기
+	userId := h.CommonFunc(c)
 
 	// 2. 서비스함수 실행
 	res, err := h.service.FindVisualCode(uint(userId))
@@ -117,4 +117,11 @@ func (h *authHandler) FindVisualCode(c *fiber.Ctx) error {
 		return ctx.HttpFail(err.Error(), fiber.StatusNotFound)
 	}
 	return ctx.HttpOK(res)
+}
+
+// userId를 받아올 공통 리시버 함수
+func (h *authHandler) CommonFunc(c *fiber.Ctx) (userId int) {
+	ctx := fiberkit.FiberKit{C: c}
+	userId = ctx.GetLocalsInt(common.LOCALS_USER_ID)
+	return
 }

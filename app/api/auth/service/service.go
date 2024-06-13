@@ -183,7 +183,7 @@ func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err 
 
 	// 1. 검증한 userid
 	var userInfo entity.User
-	userInfo.Model.ID = req.Id
+	userInfo.Model.ID = req.UserId
 	if req.Nickname != "" {
 		userInfo.Nickname = req.Nickname
 	}
