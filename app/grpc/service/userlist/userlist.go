@@ -2,8 +2,8 @@ package userlist
 
 import (
 	"context"
+	"main/app/api/common"
 	"main/app/grpc/proto/userlist"
-	"main/constant/common"
 	"main/database/repository"
 	"time"
 
