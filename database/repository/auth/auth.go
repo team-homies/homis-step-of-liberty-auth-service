@@ -15,6 +15,7 @@ type AuthRepository interface {
 	UpdateUserInfo(user *entity.User) (err error)
 	FindVisual(Code string) (user *entity.Visual, err error)
 	FindVisualCode(Code string) (res *entity.Visual, err error)
+	FindUserList(userId uint) (res *entity.User, err error)
 }
 
 type gormAuthRepository struct {
@@ -140,6 +141,22 @@ func (g *gormAuthRepository) FindVisualCode(Code string) (res *entity.Visual, er
 	// 1. gorm 적용
 	err = g.db.Model(&entity.Visual{}).Select("code", "name", "display_level", "description").Where("code = ?", Code).First(&res).Error
 
+	if err != nil {
+		return
+	}
+	return
+}
+
+// 유저 리스트 조회
+func (g *gormAuthRepository) FindUserList(userId uint) (res *entity.User, err error) {
+	// 	select u.id, u.email, u.nickname, u.profile, u.created_at
+	//   from "user" u
+	//  where u.id  = 8
+	// code 추가
+
+	// 1. gorm 적용
+	tx := g.db
+	err = tx.Model(&entity.User{}).Select("id", "email", "nickname", "profile", "created_at").Where("id = ? AND is_used = true", userId).Find(&res).Error
 	if err != nil {
 		return
 	}
