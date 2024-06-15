@@ -8,6 +8,6 @@ const (
 	Baby     string = "AM"
 	Rookie   string = "BM"
 	Champion string = "CM"
-	Perfect  string = "AM"
-	Ultimate string = "AM"
+	Perfect  string = "DM"
+	Ultimate string = "EM"
 )
