@@ -2,6 +2,7 @@ package service
 
 import (
 	"main/app/api/auth/resource"
+	"main/app/api/common"
 	"main/config"
 	"main/database/entity"
 	"main/database/repository"
@@ -16,6 +17,8 @@ type AuthService interface {
 	UpdateRefreshToken(req *resource.UpdateTokenRequest) (res *resource.UpdateTokenResponse, err error)
 	UserInfo(userId uint) (res *resource.UserInfoResponse, err error)
 	UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err error)
+	FindVisual(userId uint) (res *resource.FindVisualResponse, err error)
+	FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error)
 }
 
 func NewAuthService() AuthService {
@@ -177,11 +180,10 @@ func (as *authService) UserInfo(userId uint) (res *resource.UserInfoResponse, er
 
 // 사용자 본인 정보 수정 body : Nickname, Propile
 func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err error) {
-	authRepository := repository.NewRepository()
 
 	// 1. 검증한 userid
 	var userInfo entity.User
-	userInfo.Model.ID = req.Id
+	userInfo.Model.ID = req.UserId
 	if req.Nickname != "" {
 		userInfo.Nickname = req.Nickname
 	}
@@ -191,12 +193,76 @@ func (as *authService) UpdateUserInfo(req *resource.UpdateUserInfoRequest) (err 
 	}
 
 	// 2. 만들어놓은 레포지토리를 사용해서 데이터를 수정
-	err = authRepository.UpdateUserInfo(&userInfo)
+	err = repository.NewRepository().UpdateUserInfo(&userInfo)
 	if err != nil {
 		return
 	}
 
 	// 3. 리턴
+	return
+
+}
+
+// 시각적 성취도 조회
+func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse, err error) {
+	res = new(resource.FindVisualResponse)
+
+	// 1. 수집률 grpc 호출
+	rate, err := common.GetRateGrpc(userId)
+	if err != nil {
+		return
+	}
+
+	// 2. 수집률로 조건식을 사용하여 코드분류
+	code := common.PercentCal(rate)
+
+	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
+	visualFind, err := repository.NewRepository().FindVisual(code)
+	if err != nil {
+		return
+	}
+
+	// 4. 가져온 데이터를 하나의 객체(res)에 합친다
+	res = &resource.FindVisualResponse{
+		Name:     visualFind.Name,
+		Code:     visualFind.Code,
+		Percent:  int(rate),
+		ImageUrl: visualFind.ImageUrl,
+	}
+
+	// 5. 리턴
+	return
+
+}
+
+// 시각적 성취도 코드 조회
+func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCodeResponse, err error) {
+	res = new(resource.FindVisualCodeResponse)
+
+	// 1. 수집률 grpc 호출
+	rate, err := common.GetRateGrpc(userId)
+	if err != nil {
+		return
+	}
+
+	// 2. 수집률로 조건식을 사용하여 코드분류
+	code := common.PercentCal(rate)
+
+	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
+	visualFind, err := repository.NewRepository().FindVisualCode(code)
+	if err != nil {
+		return
+	}
+
+	// 4. 가져온 데이터를 하나의 객체(res)에 합친다
+	res = &resource.FindVisualCodeResponse{
+		Name:         visualFind.Name,
+		Code:         visualFind.Code,
+		DisplayLevel: visualFind.DisplayLevel,
+		Description:  visualFind.Description,
+	}
+
+	// 5. 리턴
 	return
 
 }

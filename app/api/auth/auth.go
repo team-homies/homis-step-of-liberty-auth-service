@@ -22,4 +22,10 @@ func SetApis(route fiber.Router) {
 	// 사용자 본인 정보 수정
 	route.Put(constant.GetPath().Auth.UpdateUserInfo, middleware.JWTMiddleware, h.UpdateUserInfo)
 
+	// 시각적 성취도 조회
+	route.Get(constant.GetPath().Auth.FindVisual, middleware.JWTMiddleware, h.FindVisual)
+
+	// 시각적 성취도 코드 조회
+	route.Get(constant.GetPath().Auth.FindVisualCode, middleware.JWTMiddleware, h.FindVisualCode)
+
 }

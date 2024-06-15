@@ -28,4 +28,6 @@ type AuthPath struct {
 	UpdateRefreshToken string
 	GetUserInfo        string
 	UpdateUserInfo     string
+	FindVisual         string
+	FindVisualCode     string
 }
