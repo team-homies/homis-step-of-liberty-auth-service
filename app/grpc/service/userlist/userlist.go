@@ -30,7 +30,7 @@ func (s *server) GetUserList(ctx context.Context, in *userlist.UserListRequest) 
 	}
 
 	// 3. 유저코드를 담기 위해 성취도 단계 함수 호출
-	code := common.PercentCal(uint(per))
+	code := common.PercentCal(uint64(per))
 
 	return &userlist.UserListResponse{
 		UserId:     uint64(res.ID),
