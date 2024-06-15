@@ -10,11 +10,11 @@ service UserListService {
   }
   
   message UserListRequest {
-      int64  UserId = 1;
+      uint64  UserId = 1;
   }
 
   message UserListResponse {
-    int64 UserId = 1;
+    uint64 UserId = 1;
     string Email = 2;
     string Nickname = 3;
     string Profile = 4;
