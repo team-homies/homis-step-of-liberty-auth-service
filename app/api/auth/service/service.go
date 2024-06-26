@@ -223,7 +223,7 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 	}
 
 	// 4. 싱글퍼센트
-	SinglePercentage, err := common.GetSinglePercent(rate)
+	SinglePercentage, err := common.GetSinglePercent(rate, codePercent)
 	if err != nil {
 		return
 	}

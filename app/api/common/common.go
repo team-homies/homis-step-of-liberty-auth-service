@@ -30,7 +30,7 @@ func PercentCal(percentage uint64) (codePercent uint64) {
 	return
 }
 
-func GetSinglePercent(percentage uint64) (single uint64, err error) {
+func GetSinglePercent(rate uint64, percentage uint64) (single uint64, err error) {
 	singleRepotitory := repository.NewRepository()
 	// 1. 레포지토리 호출하여 테이블 카운트 가져오기
 	count, err := singleRepotitory.GetSinglePercent()
@@ -48,8 +48,9 @@ func GetSinglePercent(percentage uint64) (single uint64, err error) {
 	level := &resource.FindVisualCodeResponse{
 		DisplayLevel: visualInfo.DisplayLevel,
 	}
+
 	// 4. 싱글 퍼센트 계산
-	single = (percentage - (100/Num)*uint64(level.DisplayLevel)) * uint64(level.DisplayLevel)
+	single = (rate - (100/Num)*uint64(level.DisplayLevel)) * Num
 
 	return
 
