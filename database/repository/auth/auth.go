@@ -16,6 +16,7 @@ type AuthRepository interface {
 	FindVisual(Code string) (user *entity.Visual, err error)
 	FindVisualCode(Code string) (res *entity.Visual, err error)
 	FindUserList(userId uint) (res *entity.User, err error)
+	GetSinglePercent() (code []entity.Visual, count int64, err error)
 }
 
 type gormAuthRepository struct {
@@ -161,4 +162,26 @@ func (g *gormAuthRepository) FindUserList(userId uint) (res *entity.User, err er
 		return
 	}
 	return
+}
+
+// 시각적 성취도 달성률 계산
+func (g *gormAuthRepository) GetSinglePercent() (code []entity.Visual, count int64, err error) {
+	// select count(code)
+	// from visual v ;
+
+	// 1. 카운트 gorm로직
+	err = g.db.Model(&entity.Visual{}).Count(&count).Error
+	if err != nil {
+		return
+	}
+	// select code
+	// from visual v ;
+
+	// 2. 코드 담는 gorm 로직
+	err = g.db.Model(&entity.Visual{}).Select("code").Find(&code).Error
+	if err != nil {
+		return
+	}
+	return
+
 }
