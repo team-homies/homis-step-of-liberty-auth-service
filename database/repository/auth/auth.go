@@ -13,10 +13,10 @@ type AuthRepository interface {
 	FindRefreshToken(refreshToken string) (result *entity.User, err error)
 	FindUserInfo(userId uint) (user *entity.User, err error)
 	UpdateUserInfo(user *entity.User) (err error)
-	FindVisual(Code string) (user *entity.Visual, err error)
-	FindVisualCode(Code string) (res *entity.Visual, err error)
+	FindVisual(codePercent uint64) (user *entity.Visual, err error)
+	FindVisualCode(codePercent uint64) (res *entity.Visual, err error)
 	FindUserList(userId uint) (res *entity.User, err error)
-	GetSinglePercent() (code []entity.Visual, count int64, err error)
+	GetSinglePercent() (count int64, err error)
 }
 
 type gormAuthRepository struct {
@@ -119,13 +119,13 @@ func (g *gormAuthRepository) UpdateUserInfo(user *entity.User) (err error) {
 }
 
 // 시각적 성취도 조회
-func (g *gormAuthRepository) FindVisual(Code string) (res *entity.Visual, err error) {
+func (g *gormAuthRepository) FindVisual(codePercent uint64) (res *entity.Visual, err error) {
 	// 	select "code", "name", "percent", "image_url"
 	// 	from visual v
 	//    where code = "AM";
 
 	// 1. gorm 적용
-	err = g.db.Model(&entity.Visual{}).Select("code", "name", "percent", "image_url").Where("code = ?", Code).First(&res).Error
+	err = g.db.Model(&entity.Visual{}).Select("code", "name", "percent", "image_url").Where("percent = ?", codePercent).First(&res).Error
 
 	if err != nil {
 		return
@@ -134,13 +134,13 @@ func (g *gormAuthRepository) FindVisual(Code string) (res *entity.Visual, err er
 }
 
 // 시각적 성취도 코드 조회
-func (g *gormAuthRepository) FindVisualCode(Code string) (res *entity.Visual, err error) {
+func (g *gormAuthRepository) FindVisualCode(codePercent uint64) (res *entity.Visual, err error) {
 	// 	select "code", "name", "display_level", "description"
 	// 	from visual v
 	//    where code = "AM";
 
 	// 1. gorm 적용
-	err = g.db.Model(&entity.Visual{}).Select("code", "name", "display_level", "description").Where("code = ?", Code).First(&res).Error
+	err = g.db.Model(&entity.Visual{}).Select("code", "name", "display_level", "description").Where("percent = ?", codePercent).First(&res).Error
 
 	if err != nil {
 		return
@@ -165,7 +165,7 @@ func (g *gormAuthRepository) FindUserList(userId uint) (res *entity.User, err er
 }
 
 // 시각적 성취도 달성률 계산
-func (g *gormAuthRepository) GetSinglePercent() (code []entity.Visual, count int64, err error) {
+func (g *gormAuthRepository) GetSinglePercent() (count int64, err error) {
 	// select count(code)
 	// from visual v ;
 
@@ -174,14 +174,5 @@ func (g *gormAuthRepository) GetSinglePercent() (code []entity.Visual, count int
 	if err != nil {
 		return
 	}
-	// select code
-	// from visual v ;
-
-	// 2. 코드 담는 gorm 로직
-	err = g.db.Model(&entity.Visual{}).Select("code").Find(&code).Error
-	if err != nil {
-		return
-	}
 	return
-
 }
