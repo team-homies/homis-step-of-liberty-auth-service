@@ -214,7 +214,7 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 	}
 
 	// 2. 수집률로 조건식을 사용하여 코드분류
-	code := common.PercentCal(float64(rate))
+	code := common.PercentCal(rate)
 
 	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
 	visualFind, err := repository.NewRepository().FindVisual(code)
@@ -226,7 +226,7 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 	res = &resource.FindVisualResponse{
 		Name:     visualFind.Name,
 		Code:     visualFind.Code,
-		Percent:  int(rate),
+		Percent:  rate,
 		ImageUrl: visualFind.ImageUrl,
 	}
 
@@ -246,7 +246,7 @@ func (as *authService) FindVisualCode(userId uint) (res *resource.FindVisualCode
 	}
 
 	// 2. 수집률로 조건식을 사용하여 코드분류
-	code := common.PercentCal(float64(rate))
+	code := common.PercentCal(rate)
 
 	// 3.  수집률을 담아 만들어놓은 레포지토리를 사용해서 데이터를 가져온다
 	visualFind, err := repository.NewRepository().FindVisualCode(code)
