@@ -20,4 +20,5 @@ service UserListService {
     string Profile = 4;
     string VisualCode = 5;
     string Created = 6;
+    string Rate = 7;
   }
