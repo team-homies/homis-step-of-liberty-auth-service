@@ -41,12 +41,7 @@ func (as *authService) CreateToken(req *resource.CreateTokenRequest) (res *resou
 
 	// 1-1. 없으면 CreateUser 사용해서 저장 후 로직 진행(2번)
 	if !user.IsUsed {
-		err = repository.NewRepository().CreateUser(req.Id, req.Provider)
-		if err != nil {
-			return
-		}
-		// TODO: 리팩토링 예정(중복 로직)
-		user, err = repository.NewRepository().FindUserByUserInfo(req.Id, req.Provider)
+		user, err = repository.NewRepository().CreateUser(req.Id, req.Provider)
 		if err != nil {
 			return
 		}

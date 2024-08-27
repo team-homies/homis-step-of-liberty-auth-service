@@ -27,5 +27,4 @@ func SetApis(route fiber.Router) {
 
 	// 시각적 성취도 코드 조회
 	route.Get(constant.GetPath().Auth.FindVisualCode, middleware.JWTMiddleware, h.FindVisualCode)
-
 }

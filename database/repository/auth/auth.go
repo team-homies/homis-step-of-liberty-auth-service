@@ -8,7 +8,7 @@ import (
 
 type AuthRepository interface {
 	FindUserByUserInfo(email, provider string) (user *entity.User, err error)
-	CreateUser(email, provider string) error
+	CreateUser(email, provider string) (user *entity.User, err error)
 	UpdateRefreshToken(userId uint64, refreshToken string) error
 	FindRefreshToken(refreshToken string) (result *entity.User, err error)
 	FindUserInfo(userId uint) (user *entity.User, err error)
@@ -37,26 +37,29 @@ func (g *gormAuthRepository) FindUserByUserInfo(email, provider string) (user *e
 	return user, tx.Error
 }
 
-func (g *gormAuthRepository) CreateUser(email, provider string) (err error) {
+func (g *gormAuthRepository) CreateUser(email, provider string) (user *entity.User, err error) {
 	// 	INSERT
 	//   INTO "user"(nickname, profile, provider, refresh_token, is_used, email)
 	// VALUES('', '', 'google', '', true, 'suhy427@gmail.com');
 	tx := g.db.Begin()
-	err = tx.Save(&entity.User{
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		tx.Commit()
+	}()
+
+	user = &entity.User{
 		Nickname:     "",
 		Profile:      "",
 		Provider:     provider,
 		RefreshToken: "",
 		IsUsed:       true,
 		Email:        email,
-	}).Error
-
-	if err != nil {
-		tx.Rollback()
-		return
 	}
-	tx.Commit()
 
+	err = tx.Create(user).Error
 	return
 }
 
