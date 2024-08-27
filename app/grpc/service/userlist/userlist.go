@@ -32,6 +32,7 @@ func (s *server) GetUserList(ctx context.Context, in *userlist.UserListRequest) 
 	// 3. 유저코드를 담기 위해 성취도 단계 함수 호출
 	code := common.PercentCal(per)
 
+	// 4. 닉네임이 email이거나 빈칸일 경우 Nickname은 Email을 반환
 	if res.Nickname == "email" || res.Nickname == "" {
 		return &userlist.UserListResponse{
 			UserId:     uint64(res.ID),
