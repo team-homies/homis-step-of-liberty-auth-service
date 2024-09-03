@@ -5,23 +5,22 @@ import (
 	"main/app/grpc/proto/dex"
 	"main/config"
 	"main/constant/common"
-	"strconv"
 
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )
 
 // 수집률로 시각적 성취도 단계 분류
-func PercentCal(percentage uint64) (Code string) {
+func PercentCal(percentage string) (Code string) {
 
 	switch {
-	case percentage >= 80:
+	case percentage >= "80":
 		Code = common.Ultimate
-	case percentage >= 60:
+	case percentage >= "60":
 		Code = common.Perfect
-	case percentage >= 40:
+	case percentage >= "40":
 		Code = common.Champion
-	case percentage >= 20:
+	case percentage >= "20":
 		Code = common.Rookie
 	default:
 		Code = common.Baby
@@ -30,7 +29,7 @@ func PercentCal(percentage uint64) (Code string) {
 }
 
 // 수집률 grpc
-func GetRateGrpc(userId uint) (result uint64, err error) {
+func GetRateGrpc(userId uint) (result string, err error) {
 
 	// 0. grpc 연동
 	var address string
@@ -54,10 +53,6 @@ func GetRateGrpc(userId uint) (result uint64, err error) {
 	if err != nil {
 		return
 	}
-	// 2. 형변환
-	result, err = strconv.ParseUint(rate.Rate, 10, 64)
-	if err != nil {
-		return
-	}
+	result = rate.Rate
 	return
 }

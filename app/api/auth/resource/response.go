@@ -22,7 +22,7 @@ type UserInfoResponse struct {
 type FindVisualResponse struct {
 	Code     string `json:"code"`
 	Name     string `json:"name"`
-	Percent  int    `json:"percent"`
+	Percent  string `json:"percent"`
 	ImageUrl string `json:"image_url"`
 }
 

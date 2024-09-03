@@ -221,7 +221,7 @@ func (as *authService) FindVisual(userId uint) (res *resource.FindVisualResponse
 	res = &resource.FindVisualResponse{
 		Name:     visualFind.Name,
 		Code:     visualFind.Code,
-		Percent:  int(rate),
+		Percent:  rate,
 		ImageUrl: visualFind.ImageUrl,
 	}
 
